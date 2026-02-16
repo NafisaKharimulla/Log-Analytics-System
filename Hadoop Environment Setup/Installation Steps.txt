@@ -1,0 +1,391 @@
+                       **HADOOP 3.3.6 INSTALLATION \& CONFIGURATION**
+
+WSL2 (Ubuntu 22.04) – D Drive Setup
+
+Prepared By: Nafisa Shaik
+
+
+
+**1. ENVIRONMENT DETAILS**
+
+
+
+&nbsp;	Operating System: Ubuntu 22.04 (WSL2)
+
+&nbsp;       Java Version: OpenJDK 1.8
+
+&nbsp;	Hadoop Version: 3.3.6
+
+&nbsp;	Hadoop Installation Path: /mnt/d/Hadoop
+
+I have set up my Hadoop environment on Ubuntu 22.04 using WSL2, which allows me to run Linux on my Windows system.
+
+I installed OpenJDK 1.8 as Hadoop requires Java to run properly.
+
+I am using Hadoop 3.3.6, and it is installed in the directory /mnt/d/hadoop.
+
+This setup helps me run and practice Hadoop locally on my machine.
+
+
+
+**2. JAVA INSTALLATION**
+
+
+
+&nbsp;	System updated and Java 8 installed:
+
+&nbsp;		sudo apt update \&\& sudo apt upgrade -y
+
+&nbsp;		sudo apt install openjdk-8-jdk -y
+
+&nbsp;	Verification:
+
+&nbsp;		java -version
+
+&nbsp;	Output:
+
+&nbsp;		openjdk version "1.8.0\_482"
+
+&nbsp;		OpenJDK Runtime Environment
+
+&nbsp;		OpenJDK 64-Bit Server VM
+
+
+
+Java 8 confirmed compatible with Hadoop 3.3.6.
+First, I updated the system packages and installed OpenJDK 8 using the apt commands. This ensures that the required Java version is available for Hadoop to run properly.
+
+After installation, I verified it using the java -version command. The output showed openjdk version "1.8.0\_482", confirming that Java 8 was successfully installed.
+
+Since Hadoop 3.3.6 is compatible with Java 8, the Java setup is correctly configured for Hadoop.
+
+
+
+
+
+**3. HADOOP DOWNLOAD \& EXTRACTION**
+
+
+
+&nbsp;	Downloaded Hadoop:
+
+&nbsp;		wget https://downloads.apache.org/hadoop/common/hadoop-3.3.6/hadoop-3.3.6.tar.gz
+
+&nbsp;	Moved and extracted to D drive:
+
+&nbsp;		mv ~/hadoop-3.3.6.tar.gz /mnt/d/
+
+&nbsp;		cd /mnt/d
+
+&nbsp;		tar -xvzf hadoop-3.3.6.tar.gz
+
+&nbsp;		mv hadoop-3.3.6 hadoop
+
+&nbsp;		Ownership updated successfully.
+
+I downloaded Hadoop 3.3.6 using the wget command from the official Apache website.
+
+After downloading, I moved the compressed file to my D drive (/mnt/d) and extracted it using the tar command. Then, I renamed the extracted folder to hadoop for easier access and management.
+
+Finally, I updated the ownership permissions to ensure Hadoop runs properly without permission issues.
+
+
+
+**4. HADOOP CONFIGURATION**
+
+
+
+&nbsp;	Configured core-site.xml
+
+&nbsp;		fs.defaultFS set to:
+
+&nbsp;		hdfs://localhost:9000
+
+&nbsp;	Configured hdfs-site.xml with:
+
+&nbsp;		dfs.replication = 1
+
+&nbsp;		dfs.namenode.name.dir = file:/mnt/d/hadoop/data/namenode
+
+&nbsp;		dfs.datanode.data.dir = file:/mnt/d/hadoop/data/datanode
+
+&nbsp;	Created required directories:
+
+&nbsp;		/mnt/d/hadoop/data/namenode
+
+&nbsp;		/mnt/d/hadoop/data/datanode
+
+
+
+I updated the core-site.xml file and set the default file system to hdfs://localhost:9000.
+
+In the hdfs-site.xml file, I set the replication to 1 and specified the NameNode and DataNode storage paths.
+
+Then, I created the required folders for the NameNode and DataNode to store Hadoop data properly.
+
+
+
+**5. ENVIRONMENT VARIABLES**
+
+
+
+&nbsp;	Added to ~/.bashrc:
+
+&nbsp;		export JAVA\_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+
+&nbsp;		export HADOOP\_HOME=/mnt/d/hadoop
+
+&nbsp;		export PATH=$PATH:$HADOOP\_HOME/bin:$HADOOP\_HOME/sbin
+
+&nbsp;	Applied changes:
+
+&nbsp;		source ~/.bashrc
+
+&nbsp;	Verification:
+
+&nbsp;		hadoop version
+
+&nbsp;	Output:
+
+&nbsp;		Hadoop 3.3.6
+
+&nbsp;		Compiled by ...
+
+&nbsp;		This command was run using ...
+
+
+
+I added the required environment variables like JAVA\_HOME and HADOOP\_HOME in the ~/.bashrc file and updated the PATH.
+
+After applying the changes using source ~/.bashrc, I verified the setup with hadoop version, which showed Hadoop 3.3.6, confirming it was configured correctly.
+
+
+
+**6. SSH CONFIGURATION**
+
+
+
+&nbsp;	Installed SSH:
+
+&nbsp;		sudo apt install -y openssh-server
+
+&nbsp;		sudo service ssh start
+
+&nbsp;	Passwordless SSH enabled:
+
+&nbsp;		ssh-keygen -t rsa -P "" -f ~/.ssh/id\_rsa
+
+&nbsp;		cat ~/.ssh/id\_rsa.pub >> ~/.ssh/authorized\_keys
+
+&nbsp;		chmod 600 ~/.ssh/authorized\_keys
+
+&nbsp;	Verification:
+
+&nbsp;		ssh localhost
+
+
+
+Login successful without password.
+
+I installed and started the SSH service to allow secure communication within the system.
+
+Then, I configured passwordless SSH by generating an SSH key and adding it to the authorized keys file.
+
+Finally, I verified it using ssh localhost, and it logged in successfully without asking for a password.
+
+
+
+
+
+**7. HDFS INITIALIZATION**
+
+
+
+&nbsp;	Formatted NameNode:
+
+&nbsp;		hdfs namenode -format
+
+&nbsp;	Output:
+
+&nbsp;		Storage directory /mnt/d/hadoop/data/namenode has been successfully formatted.
+
+
+
+I initialized HDFS by formatting the NameNode using the hdfs namenode -format command.
+
+The output confirmed that the storage directory /mnt/d/hadoop/data/namenode was successfully formatted, meaning HDFS is ready to start.
+
+
+
+
+
+**8. STARTING HDFS SERVICES**
+
+
+
+&nbsp;	start-dfs.sh
+
+&nbsp;	Verification:
+
+&nbsp;		jps
+
+&nbsp;	Output:
+
+&nbsp;		NameNode
+
+&nbsp;		DataNode
+
+&nbsp;		SecondaryNameNode
+
+&nbsp;		Jps
+
+&nbsp;	HDFS services running successfully.
+
+&nbsp;	Web UI verified at:
+
+&nbsp;		http://localhost:9870
+
+
+
+I started the HDFS services using the start-dfs.sh command.
+
+After running jps, I confirmed that NameNode, DataNode, and SecondaryNameNode were running.
+
+I also verified the setup through the web interface at http://localhost:9870
+
+, confirming that HDFS is working properly.
+
+
+
+**9. STARTING YARN**
+
+
+
+&nbsp;	start-yarn.sh
+
+&nbsp;	Verification:
+
+&nbsp;		jps
+
+&nbsp;	Output:
+
+&nbsp;		NameNode
+
+&nbsp;		DataNode
+
+&nbsp;		SecondaryNameNode
+
+&nbsp;		ResourceManager
+
+&nbsp;		NodeManager
+
+&nbsp;		Jps
+
+&nbsp;	YARN Web UI:
+
+&nbsp;		http://localhost:8088
+
+&nbsp;		Active Nodes: 1
+
+
+
+I started YARN using the start-yarn.sh command.
+
+After running jps, I confirmed that ResourceManager and NodeManager were running along with the HDFS services.
+
+I also checked the YARN Web UI at http://localhost:8088
+
+,where it showed 1 active node, confirming YARN is working correctly.
+
+
+
+
+
+**10. HDFS OPERATIONS TEST**
+
+
+
+&nbsp;	Created directories:
+
+&nbsp;		hdfs dfs -mkdir /user
+
+&nbsp;		hdfs dfs -mkdir /user/sam
+
+&nbsp;	Verified:
+
+&nbsp;		hdfs dfs -ls /user
+
+&nbsp;	Output:
+
+&nbsp;		nafisa
+
+&nbsp;	Created sample file:
+
+&nbsp;		hello hadoop
+
+&nbsp;		hello nafisa
+
+&nbsp;		hadoop is powerful
+
+&nbsp;	Uploaded to HDFS:
+
+&nbsp;		hdfs dfs -put sample.txt /user/nafisa/
+
+&nbsp;		Viewed file from HDFS:
+
+&nbsp;		hdfs dfs -cat /user/nafisa/sample.txt
+
+&nbsp;	Output:
+
+&nbsp;		hello hadoop
+
+&nbsp;		hello nafisa
+
+&nbsp;		hadoop is powerful
+
+
+
+I tested HDFS by creating directories under /user and verified them using the hdfs dfs -ls command.
+
+Then, I created a sample text file and uploaded it to HDFS using hdfs dfs -put.
+
+Finally, I checked the file using hdfs dfs -cat, and the content was displayed correctly, confirming that HDFS operations are working properly.
+
+
+
+**11. MAPREDUCE TEST – WORDCOUNT**
+
+
+
+&nbsp;	Executed WordCount job:
+
+&nbsp;		hadoop jar hadoop-mapreduce-examples-3.3.6.jar wordcount /user/nafisa/sample.txt /user/nafisa/output
+
+&nbsp;		Job completed successfully.
+
+&nbsp;	Output verified:
+
+&nbsp;		hdfs dfs -cat /user/nafisa/output/part-r-00000
+
+&nbsp;	Result:
+
+&nbsp;		hadoop 2
+
+&nbsp;		hello 2
+
+&nbsp;		is 1
+
+&nbsp;		powerful 1
+
+&nbsp;		nafisa 1
+
+
+
+I tested MapReduce by running the WordCount example program on the sample file stored in HDFS. The job completed successfully without errors.
+
+Then, I checked the output file in HDFS, and it correctly displayed the word count results, confirming that the MapReduce setup is working properly.
+
+
+
+INSTALLATION COMPLETED SUCCESSFULLY
+
