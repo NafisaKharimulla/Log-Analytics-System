@@ -1,0 +1,55 @@
+Phase 3 – Task 4: Built-in WordCount Execution
+
+
+Objective:
+Run Hadoop’s built-in WordCount example on HDFS log data to validate distributed processing.
+
+HDFS Input:
+
+Command:
+hdfs dfs -ls /logs
+
+Output:
+/logs/logfiles.log   246038898 bytes
+
+Run WordCount:
+Command:
+hadoop jar /mnt/d/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.6.jar wordcount /logs/logfiles.log /logs/output_wordcount
+
+Output:
+Job completed successfully.
+
+Verify Output:
+Command:
+hdfs dfs -ls /logs/output_wordcount
+hdfs dfs -cat /logs/output_wordcount/part-r-00000 | head
+
+Output:
+"-"     600855
+"DELETE 245093
+"GET    262905
+"Mozilla/5.0    1000000
+"POST   246615
+"PUT    245387
+"http://www.parker-miller.org/tag/list/list/privacy/"   399145
+(KHTML, 1000000
+(Linux; 200545
+(Macintosh;     199755
+
+Analysis:
+
+1. Number of Mapper Tasks:
+- Each HDFS input block launches 1 mapper.
+- Small file (2 blocks) contains 2 mappers.
+- Large file (1 GB, 128 MB blocks → 8 blocks) -> 8 mappers.
+
+2. Relationship between Input Blocks and Mapper Count:
+- Number of mappers = number of input splits (default = block size)
+- More blocks → more mappers → higher parallelism.
+
+3. Reducer Execution and Shuffle Behavior:
+- Reducers aggregate outputs from all mappers.
+- Shuffle moves mapper outputs to reducers, ensuring all values for a key go to the same reducer.
+- WordCount typically uses 1 or more reducers depending on configuration.
+- Observed reducer output: final counts per word written to /logs/output_wordcount/part-r-00000.
+
