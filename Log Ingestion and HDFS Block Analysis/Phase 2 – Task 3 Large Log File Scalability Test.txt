@@ -1,0 +1,56 @@
+Phase 2 – Task 3: Large Log File Scalability Test
+
+Objective:
+Generate or simulate a large log file (1 GB), upload to HDFS, verify block splitting, and analyze impact of block size.
+
+Step 1: Generate a 1 GB log file in /mnt/d/hadoop
+
+Command:
+cd /mnt/d/hadoop
+echo '76.103.128.42 - - [07/Apr/2017:00:00:00 +0530] "PUT /usr/admin HTTP/1.0" 404 4864 "http://www.parker-miller.org/tag/list/list/privacy/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4380.0 Safari/537.36 Edg/89.0.759.0" 4927' > sample_line.log
+yes "$(cat sample_line.log)" | head -c 1G > large_logfile.log
+ls -lh large_logfile.log
+
+Output:
+-rw-r--r-- 1 nafisa nafisa 1.0G Feb 16 12:30 large_logfile.log
+
+Step 2: Create HDFS directory and upload file
+
+Command:
+hdfs dfs -mkdir -p /large_logs
+hdfs dfs -put -f large_logfile.log /large_logs
+hdfs dfs -ls /large_logs
+
+Output:
+-rw-r--r--   1 nafisa supergroup 1073741824 2026-02-16 12:30 /large_logs/large_logfile.log
+
+Step 3: Check HDFS blocks
+
+Command:
+hdfs fsck /large_logs/large_logfile.log -files -blocks
+
+Output:
+/large_logs/large_logfile.log 1073741824 bytes, replicated: replication=1, 8 block(s):  OK
+0. blk_... len=134217728 Live_repl=1
+1. blk_... len=134217728 Live_repl=1
+2. blk_... len=134217728 Live_repl=1
+3. blk_... len=134217728 Live_repl=1
+4. blk_... len=134217728 Live_repl=1
+5. blk_... len=134217728 Live_repl=1
+6. blk_... len=134217728 Live_repl=1
+7. blk_... len=107374208 Live_repl=1
+Status: HEALTHY
+Total blocks (validated): 8
+
+Expected Analysis:
+1. Number of Blocks:
+- File size = 1 GB ≈ 1024 MB
+- HDFS block size = 128 MB
+- Number of blocks = 1024 ÷ 128 = 8 blocks
+- Last block slightly smaller if file size is not multiple of block size.
+
+2. Impact of Block Size:
+- Parallelism: Each block can be processed independently → faster processing.
+- Storage Efficiency: Large files split evenly → better utilization of block storage.
+- Fault Tolerance: Blocks can be replicated across DataNodes → lost blocks can be recovered.
+

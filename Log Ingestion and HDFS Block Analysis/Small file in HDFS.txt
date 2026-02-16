@@ -1,0 +1,63 @@
+
+Phase 2: Log Ingestion and HDFS Block Analysis
+
+Task 2: Large Log File Storage
+
+Objective:
+- Upload a large log file (logfiles.log) to HDFS
+- Verify read and write operations
+- Check HDFS block allocation for the uploaded file
+- Analyze block behavior and inefficiencies for small files
+
+Commands Executed:
+
+1. Create HDFS directory:
+hdfs dfs -mkdir -p /logs
+# Output: (No output if directory created successfully)
+
+2. Upload large log file to HDFS:
+hdfs dfs -put -f logfiles.log /logs
+# Output (if file already exists, may show error)
+# Otherwise uploads successfully
+
+3. Verify file in HDFS:
+hdfs dfs -ls /logs
+# Sample Output:
+-rw-r--r--   1 nafisa supergroup  246038898 2026-02-16 11:32 /logs/logfiles.log
+
+4. Check block allocation:
+hdfs fsck /logs/logfiles.log -files -blocks
+# Sample Output:
+/logs/logfiles.log 246038898 bytes, replicated: replication=1, 2 block(s):  OK
+0. BP-...:blk_1073741830_1006 len=134217728 Live_repl=1
+1. BP-...:blk_1073741831_1007 len=111821170 Live_repl=1
+Status: HEALTHY
+Total blocks (validated): 2
+Average block size: 123019449 B
+Default replication factor: 1
+Missing blocks: 0
+Corrupt blocks: 0
+
+Analysis:
+
+- File size = 246 MB
+- HDFS default block size = 128 MB
+- Number of blocks created = 2 (1 full block + 1 partial block)
+- File system status = HEALTHY
+- HDFS splits files into blocks for distributed storage, parallel processing, and fault tolerance.
+
+Inefficiencies of Small Files:
+
+- Small files (<128 MB) still occupy one full block
+- Wastes storage space
+- Increases metadata load on NameNode
+- Creates overhead during MapReduce jobs due to many small map tasks
+- HDFS is optimized for storing large files, not numerous small files
+
+Conclusion:
+
+HDFS divides files into fixed-size blocks (128MB by default).
+A 246MB file was split into 2 blocks: one full block (128MB) and one partial block (remaining size).
+Small files occupy one full logical block regardless of size, which leads to inefficiency.
+Storing many small files increases metadata load on the NameNode and wastes storage capacity.
+Therefore, HDFS is optimized for large files rather than numerous small files.
