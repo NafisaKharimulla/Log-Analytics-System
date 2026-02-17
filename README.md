@@ -6,7 +6,7 @@ This project demonstrates the design, configuration, and evaluation of a Hadoop-
 
 The objective is to evaluate Hadoop’s scalability, fault tolerance, and performance characteristics before adopting it in production.
 
----
+
 
 ## Business Context
 
@@ -19,7 +19,7 @@ As log volume increases daily, a distributed processing framework is required to
 Dataset Source:
 https://www.kaggle.com/datasets/avinhok/website-log-access
 
----
+
 
 ## Technologies Used
 
@@ -96,7 +96,7 @@ Recommended tuning changes for improved performance under heavy log volume.
 - Performance optimization through configuration tuning
 - Early filtering to reduce shuffle overhead
 
----
+
 
 ##  How to Execute
 
