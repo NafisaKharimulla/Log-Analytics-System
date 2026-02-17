@@ -35,3 +35,12 @@ else
 fi
 
 echo " Python WordCount Task Finished "
+
+
+#Comparison
+
+#The built-in WordCount job is executed directly from the terminal using Hadoop’s pre-built example JAR, without writing any additional code.
+#The Python WordCount uses custom mapper and reducer scripts executed through Hadoop Streaming.
+#The built-in job runs fully inside Hadoop’s framework, making it faster and more performance-efficient.
+#The Python version runs external Python processes, which adds execution overhead due to data streaming and process creation.
+#Overall, the built-in method is simpler and faster, while the Python approach provides greater flexibility and customization.
