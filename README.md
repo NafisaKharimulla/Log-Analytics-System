@@ -82,7 +82,7 @@ Analyzed:
 - MapReduce memory configurations
 - YARN resource allocation settings
 
-Recommended tuning changes for improved performance under heavy log volume.
+
 
 
 
